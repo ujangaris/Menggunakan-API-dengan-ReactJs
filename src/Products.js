@@ -6,6 +6,7 @@ const Products = () => {
   const url = "https://fakestoreapi.com/products"
   //react Hooks
   const [products, setProducts] = useState([])
+  const [showMoreId, setShowMoreId] = useState(false)
   //   funcsi untuk mengambil data
   const getDataProducts = async () => {
     // buat response
@@ -25,21 +26,22 @@ const Products = () => {
   return (
     <div className="container">
       <div className="row">
-        <h1>My Products</h1>
-        {/* looping array */}
+        <h1> My Products </h1> {/* looping array */}{" "}
         {products.map((product) => (
-          <div className="col-md-6 col-sm-6 col-lg-4 mt-5">
+          <div className="col-md-6 col-sm-6 col-lg-4 mt-5" key={product.id}>
             <CardProduct
               // membuat props
-              key={product.id}
+              id={product.id}
               title={product.title}
               price={product.price}
               description={product.description}
               image={product.image}
-            />
+              showMoreId={showMoreId}
+              setShowMoreId={setShowMoreId}
+            />{" "}
           </div>
-        ))}
-      </div>
+        ))}{" "}
+      </div>{" "}
     </div>
   )
 }
@@ -48,7 +50,12 @@ const Products = () => {
 function CardProduct(props) {
   return (
     // overflow:auto agar tinggi dari cardnya tetap namun content didalamnya akan menyesuaikan dan ada scroll
-    <Card style={{ height: "570px", overflow: "auto" }}>
+    <Card
+      style={{
+        height: "570px",
+        overflow: "auto",
+      }}
+    >
       <Card.Img
         variant="top"
         src={props.image}
@@ -57,16 +64,30 @@ function CardProduct(props) {
           height: "300px",
           margin: "20px auto",
         }}
-      />
+      />{" "}
       <Card.Body>
-        <Card.Title>{props.title}</Card.Title>
-        {/* substr digunakan untuk membatasi jumlah character huruf yang akan tercetak pada view */}
+        <Card.Title> {props.title} </Card.Title>{" "}
+        {/* substr digunakan untuk membatasi jumlah character huruf yang akan tercetak pada view */}{" "}
         <Card.Text>
-          {props.description.substr(0, 50)} <a href="#">Read More...</a>
-        </Card.Text>
-        <p>{props.price} $</p>
-        <Button variant="primary">Add Product</Button>
-      </Card.Body>
+          {" "}
+          {props.showMoreId === props.id
+            ? props.description
+            : props.description.substr(0, 50)}
+          <Card.Link
+            href="#"
+            onClick={(e) => {
+              // e.preventDefault() digunakan untuk mencegah link mereloard halaman
+              e.preventDefault()
+              props.setShowMoreId(
+                props.showMoreId === props.id ? false : props.id
+              )
+            }}
+          >
+            {props.showMoreId === props.id ? "Read Less" : "Read More..."}{" "}
+          </Card.Link>
+        </Card.Text>{" "}
+        <p> {props.price}$ </p> <Button variant="primary"> Add Product </Button>{" "}
+      </Card.Body>{" "}
     </Card>
   )
 }
